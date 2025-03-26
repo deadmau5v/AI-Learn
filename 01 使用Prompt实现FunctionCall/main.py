@@ -62,11 +62,9 @@ class CoinAgent:
             response = self.send_messages(messages)
             response_text = response.choices[0].message.content
 
-            # print("大模型回复:\n", response_text)
             is_tool_calling, tool_name, tool_input = CoinAgent.parseToolCall(
                 response_text
             )
-            # print("[DEBUG]:", response_text,is_tool_calling, tool_name, tool_input, sep=f"\n{"=" * 20}\n")
             if is_tool_calling:
                 call_fn = self.tools_map[tool_name]
                 if not call_fn:
@@ -74,16 +72,15 @@ class CoinAgent:
                 print("[Tool]", tool_name, "...")
                 tool_response = call_fn(**tool_input)
                 messages.append({"role": "user", "content": f"Observation:{tool_response}"})
-                # print("[DEBUG]", "Function Call Response:", tool_response)
                 
             finish, answer = CoinAgent.parseFinalAnswer(response_text)
             if finish:
-                print(answer)
+                print("[Answer]", answer)
                 break
 
-    def send_messages(self, messages):
+    def send_messages(self, messages, *args, **kwargs):
         return self.client.chat.completions.create(
-            model=config.MODULE, messages=messages
+            model=config.MODEL, messages=messages, *args, **kwargs
         )
 
     @staticmethod
