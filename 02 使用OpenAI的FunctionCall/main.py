@@ -131,7 +131,7 @@ def main():
     while True:
         query = input(">>>")
         if query == ".exit":
-            print("Bye.")
+            print("ByeBye.")
             return
         answer = agent.invoke(query)
         print("[AI]", answer)
